@@ -14,6 +14,7 @@ export const env = {
   nodeEnv: process.env.NODE_ENV ?? "development",
   port: Number(process.env.PORT ?? 4000),
   apiBaseUrl: process.env.API_BASE_URL ?? "http://localhost:4000",
+  allowTestAuth: process.env.ALLOW_TEST_AUTH === "true",
   webBaseUrl: process.env.WEB_BASE_URL ?? "http://localhost:3000",
   mobileCallbackScheme: process.env.MOBILE_CALLBACK_SCHEME ?? "revie",
   jwtSecret: required("JWT_SECRET", "change-me-in-production"),

@@ -34,3 +34,47 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+  api-postman-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Start API for integration tests
+        env:
+          PORT: 4000
+          API_BASE_URL: http://localhost:4000
+          WEB_BASE_URL: http://localhost:3000
+          JWT_SECRET: ci-test-secret
+          ALLOW_TEST_AUTH: "true"
+        run: pnpm --filter @revie/api start:ci > /tmp/revie-api.log 2>&1 &
+
+      - name: Wait for API health
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://localhost:4000/health >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API failed to start" >&2
+          cat /tmp/revie-api.log >&2 || true
+          exit 1
+
+      - name: Run Postman collection with Newman
+        run: pnpm test:postman

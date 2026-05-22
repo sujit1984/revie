@@ -3,6 +3,7 @@
 ## Setup
 
 - Copy .env.example to .env and populate OAuth provider keys.
+- For local collection runs without live provider tokens, set ALLOW_TEST_AUTH=true and use authTokenInput=test-token:ci-user.
 - Start infrastructure with docker compose up -d.
 - Install dependencies with corepack pnpm install.
 - Start API with corepack pnpm --filter @revie/api dev.
@@ -27,5 +28,6 @@
 ## Regression Checks
 
 - Typecheck all workspaces with corepack pnpm -r typecheck.
+- Run Newman locally with corepack pnpm test:postman.
 - Confirm web auth callback stores token in local storage.
 - Confirm mobile auth flow launches provider sign-in and returns callback token.

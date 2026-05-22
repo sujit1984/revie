@@ -6,6 +6,8 @@
   },
   "variable": [
     { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "provider", "value": "google" },
+    { "key": "authTokenInput", "value": "test-token:ci-user" },
     { "key": "accessToken", "value": "" },
     { "key": "categoryId", "value": "" },
     { "key": "brandId", "value": "" },
@@ -31,7 +33,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"provider\": \"google\",\n  \"idToken\": \"REPLACE_WITH_REAL_PROVIDER_ID_TOKEN\"\n}"
+          "raw": "{\n  \"provider\": \"{{provider}}\",\n  \"idToken\": \"{{authTokenInput}}\"\n}"
         },
         "url": "{{baseUrl}}/auth/session"
       },

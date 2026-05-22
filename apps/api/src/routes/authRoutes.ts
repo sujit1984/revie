@@ -13,6 +13,27 @@ function inferBaseUrl(requestOrigin?: string): string {
   return requestOrigin || env.apiBaseUrl;
 }
 
+function testModeProfile(provider: Provider, idToken?: string): {
+  provider: Provider;
+  providerUserId: string;
+  email: string;
+  displayName: string;
+} | null {
+  if (!env.allowTestAuth || env.nodeEnv === "production" || !idToken?.startsWith("test-token:")) {
+    return null;
+  }
+
+  const suffix = idToken.replace("test-token:", "").trim() || "ci-user";
+  const safeSuffix = suffix.toLowerCase().replace(/[^a-z0-9_-]/g, "-");
+
+  return {
+    provider,
+    providerUserId: `test-${safeSuffix}`,
+    email: `${safeSuffix}@example.test`,
+    displayName: `Test ${safeSuffix}`
+  };
+}
+
 authRouter.get("/providers", (req, res) => {
   const origin = req.headers.origin as string | undefined;
   return res.status(200).json({ providers: getProviderMetadata(inferBaseUrl(origin)) });
@@ -70,13 +91,15 @@ authRouter.post("/session", async (req, res) => {
   const payload = parsed.data;
 
   try {
-    const profile = payload.idToken
-      ? await getProfileFromIdToken(payload.provider, payload.idToken)
-      : await getProfileFromCode({
-          provider: payload.provider,
-          code: payload.code!,
-          redirectUri: payload.redirectUri ?? `${env.webBaseUrl}/auth/callback`
-        });
+    const profile =
+      testModeProfile(payload.provider, payload.idToken) ??
+      (payload.idToken
+        ? await getProfileFromIdToken(payload.provider, payload.idToken)
+        : await getProfileFromCode({
+            provider: payload.provider,
+            code: payload.code!,
+            redirectUri: payload.redirectUri ?? `${env.webBaseUrl}/auth/callback`
+          }));
 
     const user = store.upsertUser(profile);
     const accessToken = signSessionToken(user);
