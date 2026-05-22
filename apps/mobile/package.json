@@ -1,0 +1,20 @@
+{
+  "name": "@revie/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.ts",
+  "scripts": {
+    "dev": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "build": "echo 'Use EAS build for mobile releases'",
+    "lint": "echo 'No lint configured for mobile'",
+    "test": "echo 'No tests yet for mobile'",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "expo": "^51.0.32",
+    "react": "^18.3.1",
+    "react-native": "^0.75.4"
+  }
+}

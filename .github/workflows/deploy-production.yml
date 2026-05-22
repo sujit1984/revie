@@ -1,0 +1,17 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Placeholder production deploy
+        run: |
+          echo "Add production deploy commands for web/api/worker"
+          echo "Add health checks and rollback hooks"

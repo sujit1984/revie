@@ -1,0 +1,17 @@
+{
+  "name": "@revie/validation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "echo 'No lint configured for @revie/validation'",
+    "test": "echo 'No tests yet for @revie/validation'"
+  }
+}
