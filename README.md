@@ -20,6 +20,10 @@ Monorepo starter for the Revie MVP.
 
 1. Install dependencies
    - `pnpm install`
+2. Copy environment template
+   - `cp .env.example .env`
+3. Start local infrastructure (Postgres + Redis + auto schema migration)
+   - `docker compose up -d`
 2. Run all apps in dev mode
    - `pnpm dev`
 3. Build all packages

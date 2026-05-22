@@ -3,6 +3,7 @@
     "name": "Revie",
     "slug": "revie",
     "version": "0.1.0",
+    "scheme": "revie",
     "orientation": "portrait",
     "platforms": ["ios", "android"],
     "ios": {

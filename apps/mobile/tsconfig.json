@@ -3,7 +3,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "lib": ["es2022"],
-    "types": ["react", "react-native"]
+    "types": ["react-native"]
   },
   "include": ["**/*.ts", "**/*.tsx"]
 }

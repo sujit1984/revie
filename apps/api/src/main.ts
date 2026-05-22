@@ -1,23 +1,29 @@
 import express from "express";
-import { createReviewSchema } from "@revie/validation";
+import cors from "cors";
+import { env } from "./config/env.js";
+import { sendError } from "./lib/errors.js";
+import { authRouter } from "./routes/authRoutes.js";
+import { taxonomyRouter } from "./routes/taxonomyRoutes.js";
+import { productsRouter } from "./routes/productsRoutes.js";
+import { reviewsRouter } from "./routes/reviewsRoutes.js";
+import { adminRouter } from "./routes/adminRoutes.js";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok", service: "api" });
 });
 
-app.post("/v1/reviews", (req, res) => {
-  const parsed = createReviewSchema.safeParse(req.body);
-  if (!parsed.success) {
-    return res.status(400).json({ error: "Invalid payload", details: parsed.error.flatten() });
-  }
+app.use("/auth", authRouter);
+app.use("/v1/taxonomy", taxonomyRouter);
+app.use("/v1/products", productsRouter);
+app.use("/v1/reviews", reviewsRouter);
+app.use("/v1/admin", adminRouter);
 
-  return res.status(201).json({ message: "Review accepted", input: parsed.data });
-});
+app.use((req, res) => sendError(res, 404, "NOT_FOUND", `Route not found: ${req.method} ${req.path}`));
 
-const port = Number(process.env.PORT ?? 4000);
-app.listen(port, () => {
-  console.log(`Revie API running on port ${port}`);
+app.listen(env.port, () => {
+  console.log(`Revie API running on port ${env.port}`);
 });
