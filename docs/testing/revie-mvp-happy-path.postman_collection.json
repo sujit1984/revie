@@ -1,0 +1,220 @@
+{
+  "info": {
+    "name": "Revie MVP Happy Path",
+    "description": "Integration collection for auth -> taxonomy -> product -> review -> summary flow.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "provider", "value": "google" },
+    { "key": "authTokenInput", "value": "test-token:ci-user" },
+    { "key": "accessToken", "value": "" },
+    { "key": "categoryId", "value": "" },
+    { "key": "brandId", "value": "" },
+    { "key": "productTypeId", "value": "" },
+    { "key": "modelId", "value": "" },
+    { "key": "productId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. List Providers",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/auth/providers"
+      }
+    },
+    {
+      "name": "2. Exchange Provider Token For Session",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"provider\": \"{{provider}}\",\n  \"idToken\": \"{{authTokenInput}}\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/session"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.accessToken) pm.collectionVariables.set('accessToken', body.accessToken);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Create Category",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nodeType\": \"category\",\n  \"name\": \"Furniture\",\n  \"parentId\": null\n}"
+        },
+        "url": "{{baseUrl}}/v1/taxonomy/nodes"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.node && body.node.id) pm.collectionVariables.set('categoryId', body.node.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Create Brand",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nodeType\": \"brand\",\n  \"name\": \"Wakefit\",\n  \"parentId\": \"{{categoryId}}\"\n}"
+        },
+        "url": "{{baseUrl}}/v1/taxonomy/nodes"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.node && body.node.id) pm.collectionVariables.set('brandId', body.node.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Create Product Type",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nodeType\": \"product_type\",\n  \"name\": \"Dining Table\",\n  \"parentId\": \"{{brandId}}\"\n}"
+        },
+        "url": "{{baseUrl}}/v1/taxonomy/nodes"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.node && body.node.id) pm.collectionVariables.set('productTypeId', body.node.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Create Model",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nodeType\": \"model\",\n  \"name\": \"DT-XL-4402\",\n  \"parentId\": \"{{productTypeId}}\"\n}"
+        },
+        "url": "{{baseUrl}}/v1/taxonomy/nodes"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.node && body.node.id) pm.collectionVariables.set('modelId', body.node.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Create Product",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"modelNodeId\": \"{{modelId}}\",\n  \"canonicalName\": \"Wakefit Dining Table Walnut\",\n  \"modelCode\": \"WF-DT-4402\",\n  \"metadata\": {\n    \"material\": \"engineered wood\",\n    \"seats\": 4\n  }\n}"
+        },
+        "url": "{{baseUrl}}/v1/products"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.product && body.product.id) pm.collectionVariables.set('productId', body.product.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Submit Review",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"rating\": 4,\n  \"title\": \"Solid build for the price\",\n  \"body\": \"Using this table for three months and the frame is sturdy with no wobble so far.\"\n}"
+        },
+        "url": "{{baseUrl}}/v1/reviews"
+      }
+    },
+    {
+      "name": "9. Read Product Reviews",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/v1/products/{{productId}}/reviews"
+      }
+    },
+    {
+      "name": "10. Read Rating Summary",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/v1/products/{{productId}}/rating-summary"
+      }
+    }
+  ]
+}

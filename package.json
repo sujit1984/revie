@@ -9,9 +9,16 @@
     "lint": "turbo lint",
     "test": "turbo test",
     "typecheck": "turbo typecheck",
-    "format": "prettier --write ."
+    "test:postman": "newman run docs/testing/revie-mvp-happy-path.postman_collection.json -e docs/testing/revie-local.postman_environment.json --reporters cli",
+    "format": "prettier --write .",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
   },
   "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "newman": "^6.2.1",
     "prettier": "^3.3.3",
     "turbo": "^2.1.2",
     "typescript": "^5.6.3"

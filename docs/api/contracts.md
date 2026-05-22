@@ -10,6 +10,12 @@ Returns enabled login providers (google, apple, linkedin).
 ### `POST /auth/session`
 Exchanges provider auth token for app session.
 
+### `GET /auth/:provider/start?callbackUri=<url>`
+Starts provider OAuth code flow and redirects user to provider login.
+
+### `GET /auth/:provider/callback`
+OAuth callback endpoint used by provider redirects; returns app session token via redirect to callbackUri.
+
 Request body:
 
 ```json
