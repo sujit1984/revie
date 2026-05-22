@@ -34,6 +34,8 @@ Monorepo starter for the Revie MVP.
 - Architecture notes: `docs/architecture/mvp-architecture.md`
 - API contracts: `docs/api/contracts.md`
 - Sprint backlog template: `docs/product/sprint-backlog-template.md`
+- Reviewer checklist: `docs/product/reviewer-checklist.md`
+- Postman happy path collection: `docs/testing/revie-mvp-happy-path.postman_collection.json`
 - SQL schema migration: `infra/migrations/0001_initial_schema.sql`
 
 ## Notes
